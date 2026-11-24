@@ -1,0 +1,170 @@
+/**
+ * Embedded block editor on the classic post form.
+ */
+
+/* The form field an editor writes to. It shows only when the editor is not running. */
+.akceb-field__content {
+	display: block;
+	box-sizing: border-box;
+	width: 100%;
+	font-family: Consolas, Monaco, monospace;
+	font-size: 13px;
+}
+
+/* wp-admin shows #excerpt by ID, so hiding the field takes an ID too. */
+#poststuff .akceb-field.is-ready .akceb-field__content,
+.akceb-field:not(.is-ready) .akceb-field__editor {
+	display: none;
+}
+
+.akceb__frame {
+	container-type: inline-size;
+	border: 1px solid #c3c4c7;
+	background: #fff;
+}
+
+.akceb__toolbar {
+	display: flex;
+	align-items: center;
+	gap: 4px;
+	min-height: 48px;
+	padding: 0 8px;
+	border-bottom: 1px solid #e0e0e0;
+	background: #fff;
+}
+
+.akceb__block-toolbar {
+	flex: 1;
+	min-width: 0;
+	overflow-x: auto;
+}
+
+/* The block toolbar sits in the strip, so it drops its own frame. */
+.akceb__block-toolbar .block-editor-block-toolbar,
+.akceb__block-toolbar .components-toolbar-group,
+.akceb__block-toolbar .components-toolbar {
+	border: 0;
+	background: none;
+}
+
+/* Gutenberg's 24px divider between populated top-level block control groups. */
+.akceb__block-toolbar .block-editor-block-toolbar > :has(button) ~ :has(button) {
+	position: relative;
+}
+
+.akceb__block-toolbar .block-editor-block-toolbar > :has(button) ~ :has(button)::before {
+	content: "";
+	position: absolute;
+	inset-inline-start: 0;
+	top: 50%;
+	width: 1px;
+	height: 24px;
+	transform: translateY(-50%);
+	background-color: #ddd;
+	pointer-events: none;
+}
+
+.akceb__body {
+	display: flex;
+	align-items: stretch;
+}
+
+.akceb__canvas {
+	flex: 1;
+	min-width: 0;
+}
+
+.akceb__content.editor-styles-wrapper {
+	box-sizing: border-box;
+	min-height: 300px;
+	padding: 20px 24px 40px;
+	background: #fff;
+	color: #1e1e1e;
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 16px;
+	line-height: 1.6;
+}
+
+/*
+ * The editors sit inside #poststuff, where wp-admin sizes and pads every heading as a meta box
+ * title. These put headings back to what the block editor draws.
+ */
+#poststuff .akceb__content :is(h1, h2, h3, h4, h5, h6) {
+	margin-block: 1.2em 0.5em;
+	padding: 0;
+	color: inherit;
+	font-weight: 600;
+	line-height: 1.25;
+}
+
+#poststuff .akceb__content h1 {
+	font-size: 2em;
+}
+
+#poststuff .akceb__content h2 {
+	font-size: 1.6em;
+}
+
+#poststuff .akceb__content h3 {
+	font-size: 1.3em;
+}
+
+#poststuff .akceb__content h4 {
+	font-size: 1.15em;
+}
+
+#poststuff .akceb__content h5 {
+	font-size: 1em;
+}
+
+#poststuff .akceb__content h6 {
+	font-size: 0.9em;
+}
+
+#poststuff .akceb__settings h2 {
+	margin: 0;
+	padding: 0;
+	font-size: 13px;
+	line-height: 1.4;
+}
+
+.akceb__settings {
+	flex: none;
+	width: 280px;
+	max-height: 640px;
+	overflow-y: auto;
+	border-left: 1px solid #e0e0e0;
+	background: #fff;
+}
+
+/* In a narrow box the block settings move below the canvas. */
+@container (max-width: 640px) {
+	.akceb__body {
+		flex-direction: column;
+	}
+
+	.akceb__settings {
+		width: auto;
+		max-height: none;
+		border-left: 0;
+		border-top: 1px solid #e0e0e0;
+	}
+}
+
+.akceb__outline {
+	box-sizing: border-box;
+	flex: 0 1 230px;
+	min-width: 0;
+	max-height: 420px;
+	overflow: auto;
+	border-inline-end: 1px solid #e0e0e0;
+}
+
+@container (max-width: 640px) {
+	.akceb__outline {
+		flex: none;
+		max-height: 180px;
+		border-inline-end: 0;
+		border-bottom: 1px solid #e0e0e0;
+	}
+}
