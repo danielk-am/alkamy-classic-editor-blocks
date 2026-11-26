@@ -4,7 +4,7 @@ Tags: classic editor, blocks, gutenberg
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.4
+Stable tag: 1.1.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,10 @@ Existing classic content is preserved when you save without editing the body. Vi
 3. Use the plus button or type / to insert a block. Save using the normal post controls.
 
 == Changelog ==
+
+= 1.1.5 =
+* Keep deeply nested List View blocks readable and prevent wide content from overlapping Block settings.
+* Give the WPBakery AI button its own space above the editor toolbar.
 
 = 1.1.4 =
 * Switch between Blocks and Code inside the classic editor while keeping edits in the normal post content field.

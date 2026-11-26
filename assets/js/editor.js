@@ -268,14 +268,28 @@
 						el(
 							'div',
 							{ className: 'akceb__body', hidden: isCode },
-						panel === 'list' && el(
-							'div',
-							{ className: 'akceb__outline', role: 'region', 'aria-label': __( 'List View', 'alkamy-classic-editor-blocks' ) },
-							el( ListView, { isExpanded: true } )
-						),
+							panel === 'list' && el(
+								'div',
+								{ className: 'akceb__outline', role: 'region', 'aria-label': __( 'List View', 'alkamy-classic-editor-blocks' ) },
+								el( ListView, { isExpanded: true } )
+							),
+							panel === 'settings' && el(
+								'div',
+								{
+									className: 'akceb__settings',
+									role: 'region',
+									'aria-label': __( 'Block settings', 'alkamy-classic-editor-blocks' ),
+								},
+								el( BlockInspector )
+							),
 							el(
 								'div',
-								{ className: 'akceb__canvas' },
+								{
+									className: 'akceb__canvas',
+									role: 'region',
+									'aria-label': __( 'Block content', 'alkamy-classic-editor-blocks' ),
+									tabIndex: 0,
+								},
 								el(
 									BlockTools,
 									null,
@@ -296,20 +310,7 @@
 										)
 									)
 								)
-							),
-							panel === 'settings' &&
-								el(
-									'div',
-									{
-										className: 'akceb__settings',
-										role: 'region',
-										'aria-label': __(
-											'Block settings',
-											'alkamy-classic-editor-blocks'
-										),
-									},
-									el( BlockInspector )
-								)
+							)
 						)
 					)
 				)

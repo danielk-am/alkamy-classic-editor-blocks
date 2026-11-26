@@ -35,7 +35,15 @@
 	border-bottom: 0;
 }
 
+/* WPBakery places its content launcher over the top edge of the classic editor. */
+#postdivrich:has(> .akceb-field.is-ready) > .vc_ui-icon-ai[data-field-id="content"] {
+	position: static;
+	margin-inline-start: auto;
+	margin-block-end: 4px;
+}
+
 .akceb__frame {
+	--akceb-sidebar-offset: calc(var(--wp-admin--admin-bar--height, 32px) + 8px);
 	container-type: inline-size;
 	border: 1px solid #c3c4c7;
 	background: #fff;
@@ -110,12 +118,14 @@
 
 .akceb__body:not([hidden]) {
 	display: flex;
-	align-items: stretch;
+	align-items: flex-start;
 }
 
 .akceb__canvas {
+	position: relative;
 	flex: 1;
 	min-width: 0;
+	overflow-x: auto;
 }
 
 .akceb__content.editor-styles-wrapper {
@@ -172,43 +182,63 @@
 	line-height: 1.4;
 }
 
-.akceb__settings {
-	flex: none;
-	width: 280px;
-	max-height: 640px;
-	overflow-y: auto;
-	border-left: 1px solid #e0e0e0;
+.akceb__settings,
+.akceb__outline {
+	box-sizing: border-box;
+	position: sticky;
+	inset-block-start: var(--akceb-sidebar-offset);
+	overflow: auto;
 	background: #fff;
 }
 
-/* In a narrow box the block settings move below the canvas. */
-@container (max-width: 640px) {
-	.akceb__body {
-		flex-direction: column;
-	}
-
-	.akceb__settings {
-		width: auto;
-		max-height: none;
-		border-left: 0;
-		border-top: 1px solid #e0e0e0;
-	}
+.akceb__settings {
+	flex: 0 0 280px;
+	order: 1;
+	max-height: min(640px, calc(100vh - var(--akceb-sidebar-offset) - 8px));
+	border-inline-start: 1px solid #e0e0e0;
 }
 
 .akceb__outline {
-	box-sizing: border-box;
-	flex: 0 1 230px;
-	min-width: 0;
-	max-height: 420px;
-	overflow: auto;
+	flex: 0 0 230px;
+	max-height: min(420px, calc(100vh - var(--akceb-sidebar-offset) - 8px));
 	border-inline-end: 1px solid #e0e0e0;
 }
 
+/* Core uses 24px per level, which leaves too little room in an embedded sidebar. */
+.akceb__outline .block-editor-list-view-leaf[aria-level] .block-editor-list-view__expander {
+	margin-inline: var(--akceb-list-indent, 64px) 0;
+}
+
+.akceb__outline [aria-level="1"] { --akceb-list-indent: 0px; }
+.akceb__outline [aria-level="2"] { --akceb-list-indent: 8px; }
+.akceb__outline [aria-level="3"] { --akceb-list-indent: 16px; }
+.akceb__outline [aria-level="4"] { --akceb-list-indent: 24px; }
+.akceb__outline [aria-level="5"] { --akceb-list-indent: 32px; }
+.akceb__outline [aria-level="6"] { --akceb-list-indent: 40px; }
+.akceb__outline [aria-level="7"] { --akceb-list-indent: 48px; }
+.akceb__outline [aria-level="8"] { --akceb-list-indent: 56px; }
+
+/* Keep both panels within reach at the top of a narrow editor. */
 @container (max-width: 640px) {
+	.akceb__body:not([hidden]) {
+		flex-direction: column;
+		align-items: stretch;
+	}
+
+	.akceb__settings,
 	.akceb__outline {
+		position: static;
 		flex: none;
-		max-height: 180px;
-		border-inline-end: 0;
+		order: 0;
+		border-inline: 0;
 		border-bottom: 1px solid #e0e0e0;
+	}
+
+	.akceb__settings {
+		max-height: min(320px, 45vh);
+	}
+
+	.akceb__outline {
+		max-height: 180px;
 	}
 }

@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Alkamy Blocks for Classic Editor
  * Description: Edit post and page content with WordPress blocks inside the classic editing screen.
- * Version: 1.1.4
+ * Version: 1.1.5
  * Requires at least: 7.0
  * Requires PHP: 7.4
  * Author: Alkamy
@@ -171,7 +171,7 @@ final class Alkamy_Classic_Editor_Blocks {
 			'akceb-editor',
 			plugins_url( 'assets/css/editor.css', __FILE__ ),
 			array( 'wp-block-editor', 'wp-components', 'wp-edit-blocks' ),
-			'1.1.4'
+			'1.1.5'
 		);
 
 		wp_enqueue_media( array( 'post' => $post->ID ) );
@@ -179,7 +179,7 @@ final class Alkamy_Classic_Editor_Blocks {
 			'akceb-editor',
 			plugins_url( 'assets/js/editor.js', __FILE__ ),
 			array( 'wp-autop', 'wp-block-editor', 'wp-block-library', 'wp-blocks', 'wp-components', 'wp-compose', 'wp-core-data', 'wp-data', 'wp-element', 'wp-format-library', 'wp-hooks', 'wp-i18n', 'wp-keyboard-shortcuts', 'wp-keycodes', 'wp-media-utils' ),
-			'1.1.4',
+			'1.1.5',
 			true
 		);
 		wp_set_script_translations( 'akceb-editor', 'alkamy-classic-editor-blocks' );
