@@ -2,7 +2,7 @@
  * Embedded block editor on the classic post form.
  */
 
-/* The form field an editor writes to. It shows only when the editor is not running. */
+/* The post content field doubles as the Code view and as a fallback. */
 .akceb-field__content {
 	display: block;
 	box-sizing: border-box;
@@ -12,9 +12,27 @@
 }
 
 /* wp-admin shows #excerpt by ID, so hiding the field takes an ID too. */
-#poststuff .akceb-field.is-ready .akceb-field__content,
+#poststuff .akceb-field.is-ready:not(.is-code) .akceb-field__content,
 .akceb-field:not(.is-ready) .akceb-field__editor {
 	display: none;
+}
+
+#poststuff .akceb-field.is-ready.is-code .akceb-field__content {
+	display: block;
+	min-height: 300px;
+	margin: 0;
+	padding: 12px;
+	border-radius: 0;
+	direction: ltr;
+	resize: vertical;
+}
+
+.akceb-field.is-code .akceb__frame {
+	border-bottom: 0;
+}
+
+.akceb-field.is-code .akceb__toolbar {
+	border-bottom: 0;
 }
 
 .akceb__frame {
@@ -31,6 +49,32 @@
 	padding: 0 8px;
 	border-bottom: 1px solid #e0e0e0;
 	background: #fff;
+}
+
+.akceb__block-tools:not([hidden]) {
+	display: flex;
+	flex: 1;
+	align-items: center;
+	min-width: 0;
+	gap: 4px;
+}
+
+.akceb__mode-switch {
+	display: flex;
+	flex: none;
+	gap: 2px;
+	margin-inline-start: auto;
+}
+
+@container (max-width: 480px) {
+	.akceb__toolbar:has(.akceb__mode-switch) {
+		flex-wrap: wrap;
+		padding-block: 4px;
+	}
+
+	.akceb__block-tools:not([hidden]) {
+		flex-basis: 100%;
+	}
 }
 
 .akceb__block-toolbar {
@@ -64,7 +108,7 @@
 	pointer-events: none;
 }
 
-.akceb__body {
+.akceb__body:not([hidden]) {
 	display: flex;
 	align-items: stretch;
 }

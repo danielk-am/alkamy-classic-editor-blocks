@@ -87,37 +87,62 @@
 			? ''
 			: serialize( blocks );
 
-	const FieldEditor = ( { field, editorSettings } ) => {
-		const [ initialBlocks ] = useState( () => toBlocks( field.value ) );
-		const history = useStateWithHistory( initialBlocks );
+	const parseContent = ( content ) => {
+		const blocks = toBlocks( content );
+		return { blocks, content, serialized: toContent( blocks ) };
+	};
+
+	const writeContent = ( field, content ) => {
+		if ( content !== field.value ) {
+			field.value = content;
+			field.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+		}
+	};
+
+	const FieldEditor = ( { wrapper, field, editorSettings } ) => {
+		const [ initial ] = useState( () => parseContent( field.value ) );
+		const history = useStateWithHistory( initial );
 		const [ panel, setPanel ] = useState( null );
-		const [ stored ] = useState( () => ( {
-			content: field.value,
-			asBlocks: toContent( initialBlocks ),
-		} ) );
-		const blocks = history.value;
+		const [ isCode, setIsCode ] = useState( false );
+		const { blocks, content, serialized } = history.value;
 
 		useLayoutEffect( () => {
-			const content = toContent( blocks );
-			// Content nobody changed is posted back as it was stored, so opening and saving a
-			// post never rewrites it into blocks.
-			const value = content === stored.asBlocks ? stored.content : content;
-
-			if ( value !== field.value ) {
-				field.value = value;
-				field.dispatchEvent( new Event( 'input', { bubbles: true } ) );
+			wrapper.classList.toggle( 'is-code', isCode );
+			if ( ! isCode ) {
+				writeContent( field, content );
 			}
-		}, [ blocks ] );
+		}, [ wrapper, field, content, isCode ] );
+
+		const showBlocks = () => {
+			if ( isCode && field.value !== content ) {
+				history.setValue( parseContent( field.value ), false );
+			}
+			setIsCode( false );
+		};
+
+		const onBlocksChange = ( nextBlocks, isStaged ) => {
+			const nextSerialized = toContent( nextBlocks );
+			let nextContent = nextSerialized;
+			// Keep the original markup unless the edited blocks actually serialize differently.
+			if ( nextSerialized === serialized ) {
+				nextContent = content;
+			} else if ( nextSerialized === initial.serialized ) {
+				nextContent = initial.content;
+			}
+			history.setValue( { blocks: nextBlocks, content: nextContent, serialized: nextSerialized }, isStaged );
+		};
 
 		// "Restore the backup" hands over text WordPress kept in the browser. See below.
 		useEffect( () => {
-			const onRestore = ( event ) =>
-				history.setValue( toBlocks( event.detail ), false );
+			const onRestore = ( event ) => {
+				history.setValue( parseContent( event.detail ), false );
+				writeContent( field, event.detail );
+			};
 
 			field.addEventListener( 'akceb-restore', onRestore );
 
 			return () => field.removeEventListener( 'akceb-restore', onRestore );
-		}, [] );
+		}, [ field, history.setValue ] );
 
 		const onKeyDown = ( event ) => {
 			if ( isKeyboardEvent.primary( event, 'z' ) ) {
@@ -142,10 +167,8 @@
 					BlockEditorProvider,
 					{
 						value: blocks,
-						onInput: ( nextBlocks ) =>
-							history.setValue( nextBlocks, true ),
-						onChange: ( nextBlocks ) =>
-							history.setValue( nextBlocks, false ),
+						onInput: ( nextBlocks ) => onBlocksChange( nextBlocks, true ),
+						onChange: ( nextBlocks ) => onBlocksChange( nextBlocks, false ),
 						settings: editorSettings,
 					},
 					el( BlockEditorKeyboardShortcuts.Register ),
@@ -162,67 +185,89 @@
 									'alkamy-classic-editor-blocks'
 								),
 							},
-							el( Inserter, {
-								position: 'bottom right',
-								renderToggle: ( { onToggle, isOpen, disabled } ) =>
-									el( Button, {
-										className: 'akceb__inserter-toggle',
-										variant: 'primary',
-										size: 'compact',
-										icon: inserterIcon,
-										label: __(
-											'Add block',
-											'alkamy-classic-editor-blocks'
-										),
-										'aria-expanded': isOpen,
-										onClick: onToggle,
-										disabled,
-									} ),
-							} ),
-							el( Button, {
-								size: 'compact',
-								icon: wp.i18n.isRTL() ? redoIcon : undoIcon,
-								label: __( 'Undo', 'alkamy-classic-editor-blocks' ),
-								onClick: history.undo,
-								disabled: ! history.hasUndo,
-								accessibleWhenDisabled: true,
-							} ),
-							el( Button, {
-								size: 'compact',
-								icon: wp.i18n.isRTL() ? undoIcon : redoIcon,
-								label: __( 'Redo', 'alkamy-classic-editor-blocks' ),
-								onClick: history.redo,
-								disabled: ! history.hasRedo,
-								accessibleWhenDisabled: true,
-							} ),
-							ListView && el( Button, {
-								icon: listViewIcon,
-								label: __( 'List View', 'alkamy-classic-editor-blocks' ),
-								isPressed: panel === 'list',
-								'aria-expanded': panel === 'list',
-								onClick: () => setPanel( panel === 'list' ? null : 'list' ),
-							} ),
 							el(
 								'div',
-								{ className: 'akceb__block-toolbar' },
-								el( BlockToolbar, { hideDragHandle: true } )
-							),
-							el( Button, {
-								className: 'akceb__settings-toggle',
-								size: 'compact',
-								icon: wp.i18n.isRTL() ? leftSidebarIcon : rightSidebarIcon,
-								label: __(
-									'Block settings',
-									'alkamy-classic-editor-blocks'
+								{ className: 'akceb__block-tools', hidden: isCode },
+								el( Inserter, {
+									position: 'bottom right',
+									renderToggle: ( { onToggle, isOpen, disabled } ) =>
+										el( Button, {
+											className: 'akceb__inserter-toggle',
+											variant: 'primary',
+											size: 'compact',
+											icon: inserterIcon,
+											label: __(
+												'Add block',
+												'alkamy-classic-editor-blocks'
+											),
+											'aria-expanded': isOpen,
+											onClick: onToggle,
+											disabled,
+										} ),
+								} ),
+								el( Button, {
+									size: 'compact',
+									icon: wp.i18n.isRTL() ? redoIcon : undoIcon,
+									label: __( 'Undo', 'alkamy-classic-editor-blocks' ),
+									onClick: history.undo,
+									disabled: ! history.hasUndo,
+									accessibleWhenDisabled: true,
+								} ),
+								el( Button, {
+									size: 'compact',
+									icon: wp.i18n.isRTL() ? undoIcon : redoIcon,
+									label: __( 'Redo', 'alkamy-classic-editor-blocks' ),
+									onClick: history.redo,
+									disabled: ! history.hasRedo,
+									accessibleWhenDisabled: true,
+								} ),
+								ListView && el( Button, {
+									icon: listViewIcon,
+									label: __( 'List View', 'alkamy-classic-editor-blocks' ),
+									isPressed: panel === 'list',
+									'aria-expanded': panel === 'list',
+									onClick: () => setPanel( panel === 'list' ? null : 'list' ),
+								} ),
+								el(
+									'div',
+									{ className: 'akceb__block-toolbar' },
+									el( BlockToolbar, { hideDragHandle: true } )
 								),
-								isPressed: panel === 'settings',
-								'aria-expanded': panel === 'settings',
-								onClick: () => setPanel( panel === 'settings' ? null : 'settings' ),
-							} )
+								el( Button, {
+									className: 'akceb__settings-toggle',
+									size: 'compact',
+									icon: wp.i18n.isRTL() ? leftSidebarIcon : rightSidebarIcon,
+									label: __(
+										'Block settings',
+										'alkamy-classic-editor-blocks'
+									),
+									isPressed: panel === 'settings',
+									'aria-expanded': panel === 'settings',
+									onClick: () => setPanel( panel === 'settings' ? null : 'settings' ),
+								} )
+							),
+							editorSettings.codeEditingEnabled !== false && el(
+								'div',
+								{
+									className: 'akceb__mode-switch',
+									role: 'group',
+									'aria-label': __( 'Editor view', 'alkamy-classic-editor-blocks' ),
+								},
+								el( Button, {
+									size: 'compact',
+									isPressed: ! isCode,
+									onClick: showBlocks,
+								}, __( 'Blocks', 'alkamy-classic-editor-blocks' ) ),
+								el( Button, {
+									size: 'compact',
+									isPressed: isCode,
+									onClick: () => setIsCode( true ),
+								}, __( 'Code', 'alkamy-classic-editor-blocks' ) )
+							)
 						),
 						el(
 							'div',
-							{ className: 'akceb__body' },
+							{ className: 'akceb__body', hidden: isCode },
 						panel === 'list' && el(
 							'div',
 							{ className: 'akceb__outline', role: 'region', 'aria-label': __( 'List View', 'alkamy-classic-editor-blocks' ) },
@@ -373,6 +418,7 @@
 				Boundary,
 				{ wrapper },
 				el( FieldEditor, {
+					wrapper,
 					field,
 					editorSettings,
 				} )
