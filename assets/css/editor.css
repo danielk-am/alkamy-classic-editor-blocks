@@ -201,6 +201,22 @@
 	border-inline-end: 1px solid #e0e0e0;
 }
 
+/* Keep the core focus ring within the row and its 28px menu cell. */
+.akceb__outline .block-editor-list-view-leaf:not(.has-single-cell) .block-editor-list-view-block-contents::after {
+	inset-inline-end: -28px;
+}
+
+@media (hover: hover) and (pointer: fine) and (forced-colors: none) {
+	.akceb__frame :is(.akceb__outline, .akceb__settings, .akceb__canvas, .akceb__block-toolbar) {
+		--akceb-scrollbar-thumb: transparent;
+		scrollbar-color: var(--akceb-scrollbar-thumb) transparent;
+	}
+
+	.akceb__frame :is(.akceb__outline, .akceb__settings, .akceb__canvas, .akceb__block-toolbar):is(:hover, :focus-visible, :has(:focus-visible)) {
+		--akceb-scrollbar-thumb: #757575;
+	}
+}
+
 /* Core uses 24px per level, which leaves too little room in an embedded sidebar. */
 .akceb__outline .block-editor-list-view-leaf[aria-level] .block-editor-list-view__expander {
 	margin-inline: var(--akceb-list-indent, 64px) 0;
