@@ -4,7 +4,7 @@ Tags: classic editor, blocks, gutenberg
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.3
+Stable tag: 1.1.7
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,11 +12,11 @@ Use WordPress blocks for the main content of posts and pages on the classic edit
 
 == Description ==
 
-Keep the familiar Publish box, excerpt and other meta boxes while writing post or page content in blocks. Use the inserter, block toolbar and settings panel to add and format content.
+Keep the familiar Publish box, excerpt and other meta boxes while writing post or page content in blocks. Use the inserter, block toolbar and settings panel to add and format content. Use Blocks and Code in the editor toolbar to switch between visual editing and the post markup.
 
 The companion works independently of WooCommerce. With Alkamy Block Editor Product Descriptions for WooCommerce installed, that plugin continues to handle products. This plugin applies only to posts and pages that already open in the classic editor. Users who disable visual editing in their profile keep the text editor.
 
-Existing classic content is preserved when you save without editing the body. Editing the body saves standard WordPress block markup in the usual content field. The normal Publish or Update button saves the post. Deactivation keeps saved content readable on the front end.
+Existing classic content is preserved when you save without editing the body. Visual block edits save standard WordPress block markup. The normal Publish or Update button saves the post from either view. Deactivation keeps saved content readable on the front end.
 
 == Installation ==
 
@@ -25,6 +25,19 @@ Existing classic content is preserved when you save without editing the body. Ed
 3. Use the plus button or type / to insert a block. Save using the normal post controls.
 
 == Changelog ==
+
+= 1.1.7 =
+* Remove unintended List View overflow on selection and reveal needed scrollbars on mouse hover or keyboard focus.
+
+= 1.1.6 =
+* Extend List View and Block settings to the full canvas height on desktop and give stacked panels more room on mobile.
+
+= 1.1.5 =
+* Keep deeply nested List View blocks readable and prevent wide content from overlapping Block settings.
+* Give the WPBakery AI button its own space above the editor toolbar.
+
+= 1.1.4 =
+* Switch between Blocks and Code inside the classic editor while keeping edits in the normal post content field.
 
 = 1.1.3 =
 * Add Gutenberg-style vertical dividers between the selected block’s toolbar groups.

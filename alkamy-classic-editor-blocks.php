@@ -2,7 +2,7 @@
 /**
  * Plugin Name: Alkamy Blocks for Classic Editor
  * Description: Edit post and page content with WordPress blocks inside the classic editing screen.
- * Version: 1.1.3
+ * Version: 1.1.7
  * Requires at least: 7.0
  * Requires PHP: 7.4
  * Author: Alkamy
@@ -52,6 +52,7 @@ final class Alkamy_Classic_Editor_Blocks {
 
 	const EDITOR_SETTINGS = array(
 		'alignWide',
+		'codeEditingEnabled',
 		'allowedMimeTypes',
 		'imageSizes',
 		'imageDimensions',
@@ -135,7 +136,11 @@ final class Alkamy_Classic_Editor_Blocks {
 		<div id="postdivrich" class="postarea">
 			<div class="akceb-field" data-akceb-field="content">
 				<div class="akceb-field__editor"></div>
-				<textarea id="content" name="content" class="akceb-field__content" rows="15" aria-label="<?php esc_attr_e( 'Content', 'alkamy-classic-editor-blocks' ); ?>"><?php echo esc_textarea( get_post_field( 'post_content', $post->ID, 'raw' ) ); ?></textarea>
+				<textarea id="content" name="content" class="akceb-field__content" rows="15" spellcheck="false" aria-label="<?php esc_attr_e( 'Content', 'alkamy-classic-editor-blocks' ); ?>"><?php
+					// Browsers strip the first newline immediately after an opening textarea tag.
+					echo "\n";
+					echo esc_textarea( get_post_field( 'post_content', $post->ID, 'raw' ) );
+				?></textarea>
 			</div>
 		</div>
 		<?php
@@ -166,7 +171,7 @@ final class Alkamy_Classic_Editor_Blocks {
 			'akceb-editor',
 			plugins_url( 'assets/css/editor.css', __FILE__ ),
 			array( 'wp-block-editor', 'wp-components', 'wp-edit-blocks' ),
-			'1.1.3'
+			'1.1.7'
 		);
 
 		wp_enqueue_media( array( 'post' => $post->ID ) );
@@ -174,7 +179,7 @@ final class Alkamy_Classic_Editor_Blocks {
 			'akceb-editor',
 			plugins_url( 'assets/js/editor.js', __FILE__ ),
 			array( 'wp-autop', 'wp-block-editor', 'wp-block-library', 'wp-blocks', 'wp-components', 'wp-compose', 'wp-core-data', 'wp-data', 'wp-element', 'wp-format-library', 'wp-hooks', 'wp-i18n', 'wp-keyboard-shortcuts', 'wp-keycodes', 'wp-media-utils' ),
-			'1.1.3',
+			'1.1.7',
 			true
 		);
 		wp_set_script_translations( 'akceb-editor', 'alkamy-classic-editor-blocks' );
