@@ -43,7 +43,6 @@
 }
 
 .akceb__frame {
-	--akceb-sidebar-offset: calc(var(--wp-admin--admin-bar--height, 32px) + 8px);
 	container-type: inline-size;
 	border: 1px solid #c3c4c7;
 	background: #fff;
@@ -118,7 +117,7 @@
 
 .akceb__body:not([hidden]) {
 	display: flex;
-	align-items: flex-start;
+	align-items: stretch;
 }
 
 .akceb__canvas {
@@ -185,8 +184,8 @@
 .akceb__settings,
 .akceb__outline {
 	box-sizing: border-box;
-	position: sticky;
-	inset-block-start: var(--akceb-sidebar-offset);
+	/* The canvas determines the row height. Longer panel contents scroll inside it. */
+	contain: size;
 	overflow: auto;
 	background: #fff;
 }
@@ -194,13 +193,11 @@
 .akceb__settings {
 	flex: 0 0 280px;
 	order: 1;
-	max-height: min(640px, calc(100vh - var(--akceb-sidebar-offset) - 8px));
 	border-inline-start: 1px solid #e0e0e0;
 }
 
 .akceb__outline {
 	flex: 0 0 230px;
-	max-height: min(420px, calc(100vh - var(--akceb-sidebar-offset) - 8px));
 	border-inline-end: 1px solid #e0e0e0;
 }
 
@@ -222,23 +219,15 @@
 @container (max-width: 640px) {
 	.akceb__body:not([hidden]) {
 		flex-direction: column;
-		align-items: stretch;
 	}
 
 	.akceb__settings,
 	.akceb__outline {
-		position: static;
+		contain: none;
 		flex: none;
 		order: 0;
+		max-height: calc(100dvh - var(--wp-admin--admin-bar--height, 46px) - 64px);
 		border-inline: 0;
 		border-bottom: 1px solid #e0e0e0;
-	}
-
-	.akceb__settings {
-		max-height: min(320px, 45vh);
-	}
-
-	.akceb__outline {
-		max-height: 180px;
 	}
 }

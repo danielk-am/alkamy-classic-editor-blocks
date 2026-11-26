@@ -4,7 +4,7 @@ Tags: classic editor, blocks, gutenberg
 Requires at least: 7.0
 Tested up to: 7.1
 Requires PHP: 7.4
-Stable tag: 1.1.5
+Stable tag: 1.1.6
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -25,6 +25,9 @@ Existing classic content is preserved when you save without editing the body. Vi
 3. Use the plus button or type / to insert a block. Save using the normal post controls.
 
 == Changelog ==
+
+= 1.1.6 =
+* Extend List View and Block settings to the full canvas height on desktop and give stacked panels more room on mobile.
 
 = 1.1.5 =
 * Keep deeply nested List View blocks readable and prevent wide content from overlapping Block settings.
